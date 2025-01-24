@@ -21,9 +21,7 @@ function RaycasterVisualizer() {
   useEffect(() => {
     // Define event handlers
     const handleSelectStart = (event) => {
-        
-      console.log("Select button pressed:", event.target);
-      isBtnPressedRef.current = true; 
+              isBtnPressedRef.current = true; 
     };
 
     const handleSelectEnd = (event) => {
@@ -50,8 +48,8 @@ function RaycasterVisualizer() {
     };
   }, [controllers]);
   useEffect(() => {
-    state.diskRefs = scene.children.filter(child => child.isMesh);
-  }, [scene])
+    updateDiskRef(scene.children.filter(child => child.isMesh))
+    }, [scene])
 
 
   useEffect(() => {
@@ -130,8 +128,11 @@ function RaycasterVisualizer() {
         if (lineRef.current) {
           const endPoint = new Vector3().copy(origin).add(direction.multiplyScalar(100)); // Scale the ray length
           const points = [origin, endPoint];
-          lineRef.current.geometry.setFromPoints(points);
-        }
+          
+          const positionAttr = new Float32BufferAttribute(points.flat(), 3);
+          lineRef.current.geometry.setAttribute("position", positionAttr);
+          lineRef.current.geometry.attributes.position.needsUpdate = true;
+                  }
 
         // Cache the new position and rotation
         lastPosition.current.copy(currentPosition);

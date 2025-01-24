@@ -115,8 +115,8 @@ function reducer(state, action) {
               disk.id === id
                 ? {
                     ...disk,
-                    position: [closestPeg, y_position,0], 
-                    originalPosition: [closestPeg, y_position, 0], 
+                    position: [closestPeg, y_position,-8], 
+                    originalPosition: [closestPeg, y_position, -8], 
                   }
                 : disk
             ),

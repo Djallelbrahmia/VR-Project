@@ -131,7 +131,7 @@ function RaycasterVisualizer() {
                     if (intersects.length > 0) {
                       const intersectionPoint = intersects[0].point;
                       const diskId = selectedDiskRef.current;
-                      const newPosition = [intersectionPoint.x, intersectionPoint.y, 0];
+                      const newPosition = [intersectionPoint.x, intersectionPoint.y, -8];
                       moveDisk(diskId, newPosition);
                     }
                   }

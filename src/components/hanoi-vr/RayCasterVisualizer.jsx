@@ -16,7 +16,16 @@ function RaycasterVisualizer() {
   const isBtnPressedRef = useRef(false);
   const selectedDiskRef = useRef(null); // Store the currently selected disk
   const [updateCount, setUpdateCount] = useState(0);
-
+  function isTopmostDisk(diskId) {
+    // Find the peg where the disk is located
+    const peg = state.pegs.find((peg) => state.piles[peg].includes(diskId));
+  
+    if (!peg) return false;
+  
+    // Check if the disk is the topmost on the peg
+    const topDisk = state.piles[peg][state.piles[peg].length - 1];
+    return topDisk === diskId;
+  }
 
 
   useEffect(() => {
@@ -121,9 +130,12 @@ function RaycasterVisualizer() {
                       const intersectedDisk = intersects[0].object;
                       const diskName = intersectedDisk.name || "Unnamed";
                       const diskId = parseInt(diskName.split("-")[1], 10);
-          
-                      selectedDiskRef.current = diskId; // Mark the disk as selected
-                      toggleOrbitControl(false);
+                      if (isTopmostDisk(diskId)) {
+                        selectedDiskRef.current = diskId; // Mark the disk as selected
+                        toggleOrbitControl(false);
+                      } else {
+                        console.warn(`Disk ${diskId} is not the topmost disk. Selection denied.`);
+                      }
                     }
                   } else {
                     // Move the selected disk

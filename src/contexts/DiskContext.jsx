@@ -45,21 +45,18 @@ function reducer(state, action) {
       case "SELECT_DISK": {
         const selectedDiskId = action.payload;
       
-        // Helper: Find the peg containing the disk
-        const findPegOfDisk = (diskId) =>
-          state.pegs.find((peg) => state.piles[peg].includes(diskId));
+        // Find the peg where the disk is located
+        const peg = state.pegs.find((peg) => state.piles[peg].includes(selectedDiskId));
       
-        // Find the peg and check if the disk is the topmost
-        const peg = findPegOfDisk(selectedDiskId);
+        // Check if the disk is the topmost disk on the peg
         const isTopDisk =
           peg !== undefined && state.piles[peg][state.piles[peg].length - 1] === selectedDiskId;
       
-        // Allow selection only if it's the top disk
         if (isTopDisk) {
           return { ...state, selectedDisk: selectedDiskId };
         }
       
-        console.warn("Only the topmost disk on a peg can be selected.");
+        console.warn(`Disk ${selectedDiskId} is not the topmost disk. Selection denied.`);
         return state; // Do nothing if not the top disk
       }
       

@@ -65,27 +65,28 @@ function reducer(state, action) {
         return state;
       }
       
-    case "RELEASE_DISK":
+      case "RELEASE_DISK":
         const { id } = action.payload;
         const disk = state.disks.find((disk) => disk.id === id);
         const closestPeg = findClosestPeg(state.pegs, disk.position[0]);
         const distanceToClosestPeg = Math.abs(disk.position[0] - closestPeg);
         const updatedPiles = { ...state.piles };
-
+      
         if (distanceToClosestPeg < 0.5) {
-          // Remove the disk from all piles
+          // Remove disk from all piles
           Object.keys(updatedPiles).forEach((key) => {
             updatedPiles[key] = updatedPiles[key].filter((diskId) => diskId !== id);
           });
       
           // Get the current pile for the closest peg
           const targetPile = updatedPiles[closestPeg];
-          // Check if the move is valid
+      
+          // Validate move: ensure smaller disks are always on top
           if (targetPile.length > 0) {
             const topDiskId = targetPile[targetPile.length - 1];
             const topDisk = state.disks.find((disk) => disk.id === topDiskId);
             if (disk.size > topDisk.size) {
-              // Invalid move: Bigger disk cannot go on smaller disk
+              // Invalid move, reset position
               return {
                 ...state,
                 disks: state.disks.map((disk) =>
@@ -96,12 +97,15 @@ function reducer(state, action) {
             }
           }
       
-          // If the move is valid, update the pile and the disk's position
+          // If move is valid, update pile
           const newPile = [...targetPile, id];
-          const topDisk = targetPile.length > 0 
-          ? state.disks.find((disk) => disk.id === targetPile[targetPile.length - 1])
-          : null;
-          const y_position = topDisk ? topDisk.position[1] + 0.25 : 0.75;      
+          const topDisk = targetPile.length > 0
+            ? state.disks.find((disk) => disk.id === targetPile[targetPile.length - 1])
+            : null;
+            
+          // Calculate new Y position (stacking effect)
+          const y_position = topDisk ? topDisk.position[1] + 0.25 : 0.75;
+      
           updatedPiles[closestPeg] = newPile;
       
           return {
@@ -111,15 +115,15 @@ function reducer(state, action) {
               disk.id === id
                 ? {
                     ...disk,
-                    position: [closestPeg, y_position, disk.position[2]],
-                    originalPosition: [closestPeg, y_position, disk.position[2]],
+                    position: [closestPeg, y_position, disk.position[2]], // Snap to peg center (X), keep Z the same
+                    originalPosition: [closestPeg, y_position, disk.position[2]], // Update original position
                   }
                 : disk
             ),
             selectedDisk: null,
           };
         } else {
-          // If the disk is not close enough to a peg, revert to its original position
+          // Disk not close enough to a peg, reset position
           return {
             ...state,
             disks: state.disks.map((disk) =>
@@ -127,7 +131,8 @@ function reducer(state, action) {
             ),
             selectedDisk: null,
           };
-        }      
+        }
+      
     case "UPDATE_ORBIT_CONTROL":
       return { ...state, orbitControl: action.payload };
       case "UPDATE_DISK_REF": {

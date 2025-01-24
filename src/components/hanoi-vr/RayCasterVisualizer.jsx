@@ -48,8 +48,8 @@ function RaycasterVisualizer() {
     };
   }, [controllers]);
   useEffect(() => {
-    updateDiskRef(scene.children.filter(child => child.isMesh))
-    }, [scene])
+    state.diskRefs = scene.children.filter(child => child.isMesh);
+  }, [scene])
 
 
   useEffect(() => {

@@ -15,6 +15,7 @@ function RaycasterVisualizer() {
   const { scene } = useThree();
   const isBtnPressedRef = useRef(false);
   const selectedDiskRef = useRef(null); // Store the currently selected disk
+  const [updateCount, setUpdateCount] = useState(0);
 
 
 
@@ -47,9 +48,24 @@ function RaycasterVisualizer() {
       });
     };
   }, [controllers]);
+
   useEffect(() => {
-    state.diskRefs = scene.children.filter(child => child.isMesh);
-  }, [scene])
+    if (updateCount < 3) {
+      const interval = setInterval(() => {
+        console.log(`Execution #${updateCount + 1}`);
+
+        // Update state.diskRefs
+        state.diskRefs = scene.children.filter(child => child.isMesh);
+        console.log("Updated state.diskRefs:", state.diskRefs);
+
+        setUpdateCount(prev => prev + 1);
+      }, 1000);
+
+      return () => clearInterval(interval); // Cleanup on unmount
+    }
+  }, [updateCount, scene]); // Dependencies ensure re-execution
+
+
 
 
   useEffect(() => {

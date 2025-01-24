@@ -28,7 +28,7 @@ function RaycasterVisualizer() {
       console.log("Select button released:", event.target);
       isBtnPressedRef.current = false; 
       toggleOrbitControl(true);
-      releaseDisk(selectedDiskRef.current)
+      if(selectedDiskRef.current) releaseDisk(selectedDiskRef.current)
       selectedDiskRef.current = null; // Release the disk
       // Add your logic here for when the button is released
     };
@@ -48,8 +48,8 @@ function RaycasterVisualizer() {
     };
   }, [controllers]);
   useEffect(() => {
-    updateDiskRef(scene.children.filter(child => child.isMesh))
-    }, [scene])
+    state.diskRefs = scene.children.filter(child => child.isMesh);
+  }, [scene])
 
 
   useEffect(() => {
@@ -87,6 +87,7 @@ function RaycasterVisualizer() {
         // Update the raycaster
         raycaster.current.set(origin, direction);
         const intersects = raycaster.current.intersectObjects(state.diskRefs, true);
+        console.log(intersects)
         if (intersects.length > 0) {
             const intersectedDisk = intersects[0].object;
             const diskName = intersectedDisk.name || "Unnamed";
@@ -128,11 +129,8 @@ function RaycasterVisualizer() {
         if (lineRef.current) {
           const endPoint = new Vector3().copy(origin).add(direction.multiplyScalar(100)); // Scale the ray length
           const points = [origin, endPoint];
-          
-          const positionAttr = new Float32BufferAttribute(points.flat(), 3);
-          lineRef.current.geometry.setAttribute("position", positionAttr);
-          lineRef.current.geometry.attributes.position.needsUpdate = true;
-                  }
+          lineRef.current.geometry.setFromPoints(points);
+        }
 
         // Cache the new position and rotation
         lastPosition.current.copy(currentPosition);

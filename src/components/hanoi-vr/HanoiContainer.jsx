@@ -3,6 +3,7 @@ import HanoiModel from "./HanoiModel";
 import { useEffect, useRef } from 'react';
 import { DiskProvider } from '../../contexts/DiskContext';
 import RaycasterVisualizer from './RayCasterVisualizer';
+import Background from './background';
 
 function HanoiContainerVR() {
 
@@ -12,6 +13,8 @@ function HanoiContainerVR() {
     <DefaultXRControllers/>
     <ambientLight intensity={0.5} />
     <directionalLight position={[5, 10, 5]} intensity={1} />
+    <Background/>
+
     <DiskProvider>
 
         <RaycasterVisualizer />

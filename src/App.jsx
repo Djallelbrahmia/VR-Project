@@ -9,8 +9,7 @@ function App() {
 
   return (
     <Routes>
-      <Route path='/' element={<HanoiContainer/>}/>
-      <Route path='/vr' element={<HanoiContainerVR/>}/>
+      <Route path='/' element={<HanoiContainerVR/>}/>
 
 
 

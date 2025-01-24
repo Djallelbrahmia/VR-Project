@@ -17,15 +17,18 @@ function RaycasterVisualizer() {
   const selectedDiskRef = useRef(null); // Store the currently selected disk
   const [updateCount, setUpdateCount] = useState(0);
   function isTopmostDisk(diskId) {
-    // Find the peg where the disk is located
-    const peg = state.pegs.find((peg) => state.piles[peg].includes(diskId));
+    // Find the peg where the disk resides
+    const pegIndex = Object.keys(state.piles).find((peg) =>
+      state.piles[peg].includes(diskId)
+    );
   
-    if (!peg) return false;
+    if (!pegIndex) return false; // Disk not found on any peg
   
-    // Check if the disk is the topmost on the peg
-    const topDisk = state.piles[peg][state.piles[peg].length - 1];
+    // Check if this disk is the topmost on the peg
+    const topDisk = state.piles[pegIndex][state.piles[pegIndex].length - 1];
     return topDisk === diskId;
   }
+  
 
 
   useEffect(() => {
@@ -64,7 +67,7 @@ function RaycasterVisualizer() {
         console.log(`Execution #${updateCount + 1}`);
 
         // Update state.diskRefs
-        state.diskRefs = scene.children.filter(child => child.isMesh);
+        state.diskRefs = scene.children.filter((child) => child.isMesh && child.name.startsWith("disk"));
         console.log("Updated state.diskRefs:", state.diskRefs);
 
         setUpdateCount(prev => prev + 1);

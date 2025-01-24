@@ -102,7 +102,7 @@ function reducer(state, action) {
           const topDisk = targetPile.length > 0
             ? state.disks.find((disk) => disk.id === targetPile[targetPile.length - 1])
             : null;
-            
+
           // Calculate new Y position (stacking effect)
           const y_position = topDisk ? topDisk.position[1] + 0.25 : 0.75;
       
@@ -115,8 +115,8 @@ function reducer(state, action) {
               disk.id === id
                 ? {
                     ...disk,
-                    position: [closestPeg, y_position, disk.position[2]], // Snap to peg center (X), keep Z the same
-                    originalPosition: [closestPeg, y_position, disk.position[2]], // Update original position
+                    position: [closestPeg, y_position,-8], // Snap to peg center (X), keep Z the same
+                    originalPosition: [closestPeg, y_position, -8], // Update original position
                   }
                 : disk
             ),

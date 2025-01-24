@@ -115,8 +115,8 @@ function reducer(state, action) {
               disk.id === id
                 ? {
                     ...disk,
-                    position: [closestPeg, y_position,-8], // Snap to peg center (X), keep Z the same
-                    originalPosition: [closestPeg, y_position, -8], // Update original position
+                    position: [closestPeg, y_position,0], 
+                    originalPosition: [closestPeg, y_position, 0], 
                   }
                 : disk
             ),
